@@ -10,11 +10,7 @@
     <!-- Listing Card -->
     <div class="col-12 mb-4">
       <div class="card show-card shadow-sm">
-        <img
-          src="<%= listing.image.url %>"
-          class="card-img-top show-img"
-          alt="listing_image"
-        />
+        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" />
         <div class="card-body">
           <i>Created by: <%= listing.owner.username %></i>
           <p class="card-text mt-2"><%= listing.description %></p>
@@ -25,7 +21,7 @@
       </div>
     </div>
 
-    <!-- Map Section -->
+    <!-- Map -->
     <div class="col-12 mb-4">
       <div id="map"></div>
     </div>
@@ -74,7 +70,7 @@
       </div>
     <% } %>
 
-    <!-- Reviews List -->
+    <!-- Reviews -->
     <div class="col-12">
       <hr>
       <h4 class="mb-3">All Reviews (<%= listing.reviews.length %>)</h4>
@@ -83,12 +79,15 @@
           <% for(let review of listing.reviews) { %>
             <div class="col">
               <div class="card shadow-sm h-100">
-                <div class="card-body">
-                  <p class="mb-2 text-warning fw-bold fs-5">
-                    <%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %>
-                  </p>
-                  <p class="card-text fst-italic">"<%= review.comment %>"</p>
-                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                <div class="card-body d-flex flex-column justify-content-between">
+                  <div>
+                    <p class="mb-2 text-warning fw-bold fs-5">
+                      <%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %>
+                    </p>
+                    <p class="card-text fst-italic mb-3">"<%= review.comment %>"</p>
+                  </div>
+
+                  <div class="review-footer mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
                     <h6 class="card-subtitle text-muted small m-0">
                       Reviewed on: <%= review.createdAt.toLocaleDateString() %> | Author:
                       <span class="fw-bold text-dark">
@@ -99,9 +98,11 @@
                         <% } %>
                       </span>
                     </h6>
+
                     <% if (currentUser && review.author && review.author.equals(currentUser._id)) { %>
                       <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
-                        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">
+                        <button class="btn btn-sm btn-danger ms-3 px-3 py-1" style="border-radius: 6px;"
+                          onclick="return confirm('Are you sure you want to delete this review?');">
                           Delete
                         </button>
                       </form>
@@ -122,32 +123,42 @@
 <!-- Leaflet Map -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
 <script>
   const latitude = <%= listing.geometry.coordinates[1] %>;
   const longitude = <%= listing.geometry.coordinates[0] %>;
 
   const map = L.map('map').setView([latitude, longitude], 13);
+
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
   }).addTo(map);
+
   L.marker([latitude, longitude]).addTo(map)
     .bindPopup("<b><%= listing.title %></b><br><%= listing.location %>")
     .openPopup();
+
+  setTimeout(() => map.invalidateSize(), 300);
 </script>
 
 <style>
-  /* ⭐ Image Responsive Styling */
   .show-img {
     width: 100%;
     border-radius: 8px;
     object-fit: cover;
   }
 
-  /* ⭐ Map Styling */
   #map {
-    border-radius: 10px;
     width: 100%;
     height: 400px;
+    min-height: 350px;
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .leaflet-container {
+    width: 100% !important;
+    height: 100% !important;
   }
 
   /* ⭐ Star Rating */
@@ -170,24 +181,26 @@
   .star-rating > label:hover ~ label,
   .star-rating > input:checked ~ label { color: #ffc107; }
 
-  /* 💻 Desktop Adjustment */
-  @media (min-width: 992px) {
-    .show-img {
-      height: 50vh;
-      max-height: 480px;
-    }
-    #map {
-      height: 350px;
-    }
+  /* ✅ Review Footer Styling */
+  .review-footer {
+    gap: 10px;
   }
 
-  /* 📱 Mobile (same design) */
+  .review-footer form {
+    margin-left: 10px;
+  }
+
+  .review-footer button {
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 992px) {
+    .show-img { height: 50vh; max-height: 480px; }
+    #map { height: 400px; }
+  }
+
   @media (max-width: 768px) {
-    .show-img {
-      height: 40vh;
-    }
-    #map {
-      height: 300px;
-    }
+    .show-img { height: 40vh; }
+    #map { height: 300px; }
   }
 </style>
