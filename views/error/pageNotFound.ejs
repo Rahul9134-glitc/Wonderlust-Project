@@ -1,0 +1,74 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    /* Full viewport height and central alignment */
+    .error-container {
+        min-height: 80vh; /* Adjusting for boilerplate header/footer */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #495057; /* Dark gray text */
+        background-color: #f8f9fa; /* Light background */
+    }
+
+    /* Styling the main 404 number */
+    .error-code {
+        font-size: 10rem;
+        font-weight: 900;
+        color: #dc3545; /* Bootstrap Danger Red */
+        animation: pulse 1.5s infinite;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Styling the secondary message */
+    .error-message {
+        font-size: 1.8rem;
+        margin-top: -20px; /* Pull it slightly closer to 404 */
+        margin-bottom: 30px;
+    }
+
+    /* Simple animation for the 404 number */
+    @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .error-code {
+            font-size: 6rem;
+        }
+        .error-message {
+            font-size: 1.4rem;
+        }
+    }
+</style>
+
+<div class="error-container">
+    <!-- Displaying 404 with animation -->
+    <h1 class="error-code">404</h1>
+    
+    <!-- Using a professional message -->
+    <h3 class="error-message">
+        Opps! Page Not Found
+    </h3>
+
+    <!-- Contextual message using the 'err' object -->
+    <% if (err && err.message) { %>
+        <p class="text-muted mb-4">
+            <%= err.message %>
+        </p>
+    <% } else { %>
+        <p class="text-muted mb-4">
+            It looks like you followed a broken link or entered a URL that doesn't exist.
+        </p>
+    <% } %>
+
+    <!-- Home Button -->
+    <a href="/listings" class="btn btn-dark btn-lg shadow">
+        Go Back Home
+    </a>
+</div>

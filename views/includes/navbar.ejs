@@ -1,0 +1,203 @@
+<style>
+  /* 🔹 Custom Link Animation */
+  .nav-link-custom {
+    position: relative;
+    transition: color 0.3s ease;
+    padding-bottom: 6px !important;
+  }
+
+  .nav-link-custom::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 3px;
+    background-color: #0d6efd;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s ease-out;
+  }
+
+  .nav-link-custom:hover::after {
+    width: 100%;
+  }
+
+  .nav-link-custom:hover {
+    color: #0d6efd !important;
+  }
+
+  /* 🔹 Navbar link spacing */
+  .navbar-nav .nav-link {
+    padding-right: 1.2rem !important;
+    padding-left: 1.2rem !important;
+    font-weight: 500;
+  }
+
+  /* 🔹 Animated Profile Icon */
+  .profile-icon-animated {
+    font-size: 1.3rem;
+    transition: transform 0.3s ease;
+  }
+
+  .profile-icon-animated:hover {
+    transform: scale(1.1);
+  }
+
+  /* 🔹 Search bar styling */
+  .navbar-search {
+    position: relative;
+    max-width: 320px;
+  }
+
+  .navbar-search input {
+    border-radius: 20px;
+    padding-left: 35px;
+    transition: box-shadow 0.3s ease;
+  }
+
+  .navbar-search input:focus {
+    box-shadow: 0 0 6px rgba(13, 110, 253, 0.4);
+  }
+
+  .navbar-search i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+  }
+
+  /* 🔹 Mobile Adjustments */
+  @media (max-width: 768px) {
+    .navbar-brand {
+      font-size: 1.2rem;
+    }
+
+    .navbar-collapse {
+      background-color: #fff !important;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      padding: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .navbar-nav .nav-link {
+      padding: 0.6rem 1rem !important;
+      text-align: center;
+      display: block;
+    }
+
+    .dropdown-menu {
+      text-align: center;
+      border-radius: 0.5rem;
+      border: none;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      background-color: #fff !important;
+    }
+
+    .navbar-search {
+      max-width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    .badge {
+      display: none;
+    }
+
+    .dropdown-toggle::after {
+      display: none;
+    }
+  }
+</style>
+
+<nav class="navbar navbar-expand-md bg-light border-bottom sticky-top shadow-sm">
+  <div class="container-fluid px-3">
+    <!-- 🔹 Brand -->
+    <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="/listings">
+      <i class="fa-solid fa-compass text-primary"></i>
+      Wanderlust
+    </a>
+
+    <!-- 🔹 Mobile Toggle -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- 🔹 Navbar Content -->
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+      <!-- 🔍 Search Bar -->
+      <form class="navbar-search mx-auto my-2 my-md-0" role="search" action="#" method="GET">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input
+          class="form-control"
+          type="search"
+          name="q"
+          placeholder="Search listings..."
+          aria-label="Search"
+        />
+      </form>
+
+      <!-- Right Side -->
+      <div class="navbar-nav ms-auto d-flex align-items-center gap-3">
+        <% if (currentUser) { %>
+        <div class="nav-item dropdown text-center text-md-start">
+          <a
+            class="nav-link dropdown-toggle d-flex align-items-center justify-content-center justify-content-md-start"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-user-circle profile-icon-animated me-2"></i>
+            <span class="badge bg-primary rounded-pill d-none d-md-inline">
+              Welcome, <%= currentUser.username %>
+            </span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end mt-2">
+            <li><h6 class="dropdown-header">Account Settings</h6></li>
+            <li><a class="dropdown-item" href="#">My Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger fw-bold" href="/logout">Log Out</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a href="/listings/new" class="dropdown-item text-primary fw-semibold">
+                <i class="fa-solid fa-plus me-2"></i>Add New Listing
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <% } else { %>
+        <div class="nav-item dropdown text-center text-md-start">
+          <a
+            class="nav-link dropdown-toggle d-flex justify-content-center justify-content-md-start"
+            href="#"
+            role="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            <i class="fa-solid fa-user-lock profile-icon-animated"></i>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end mt-2">
+            <li><a class="dropdown-item" href="/signup">Sign Up</a></li>
+            <li><a class="dropdown-item" href="/login">Log In</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a href="/listings/new" class="dropdown-item text-primary fw-semibold">
+                <i class="fa-solid fa-plus me-2"></i>Add New Listing
+              </a>
+            </li>
+          </ul>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</nav>

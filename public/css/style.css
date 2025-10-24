@@ -1,0 +1,155 @@
+body{
+      background-color: pink;
+     font-family: "Plus Jakarta Sans", sans-serif;
+     font-optical-sizing: auto;
+     font-weight: 600;
+     font-style: normal;
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container{
+    flex: 1;
+}
+
+.navbar{
+    height: 5rem;
+    background: white;
+}
+
+.fa-compass{
+    color : #fe424d;
+    font-size: 2rem;
+}
+.nav-link{
+   color : #222222 !important;
+}
+
+/* footer */
+
+.f-info-links a{
+    text-decoration: none;
+    color: #222222;
+}
+
+.f-info-links a:hover{
+    text-decoration: underline;
+}
+
+.f-info-links,
+.f-info-socials,
+.f-info-brand{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+   
+.f-info-socials i{
+    font-size: 1.3rem;
+    margin-left: 2rem;
+}
+
+.f-info{
+    text-align: center;
+    background-color: #ebebeb;
+    height: 8rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: space-evenly;
+
+}
+
+/* Card */
+
+.card{
+    border: none !important;
+    margin-bottom: 2rem;
+}
+
+.card-img-top{
+    border-radius: 1rem !important;
+    width: 100%;
+    object-fit: cover;
+}
+
+.card-body{
+    padding: 0 !important;
+}
+
+.listing-link{
+    text-decoration: none;
+}
+
+.card-img-overlay{
+    opacity: 0;
+}
+
+.card-img-overlay:hover{
+    opacity: 0.2;
+    background-color: white;
+}
+
+/* Add new Listing */
+
+.add-btn {
+    background-color: #fe424d !important;
+    border: none !important;
+    transition: background-color 0.3s ease; /* smooth hover effect */
+}
+
+.add-btn:hover {
+    background-color: #e63946 !important; /* slightly darker red */
+}
+
+/* Show card */
+
+custom-edit-btn:hover {
+    background-color: #dc3545; /* Bootstrap's red */
+    border-color: #dc3545;
+    /* Aap yahan koi aur effect bhi de sakte hain, jaise thoda lighter red */
+    opacity: 0.8; /* Thoda transparent on hover */
+    transform: scale(1.05); /* Thoda enlarge on hover */
+    transition: all 0.2s ease-in-out; /* Smooth transition */
+}
+
+/* Delete button ki width ko bhi manage karne ke liye */
+.custom-delete-btn {
+    width: 100px; /* Ya koi aur value jo aapko theek lage */
+}
+
+/* Agar aap chahen to delete button par bhi hover effect de sakte hain */
+.custom-delete-btn:hover {
+    opacity: 0.9;
+    background-color: #c82333; /* Darker red on hover */
+    border-color: #bd2130;
+    transition: all 0.2s ease-in-out;
+}
+
+/* Baaki pehle ke styles, agar hain toh */
+.show-img {
+    height: 60vh;
+    object-fit: cover;
+}
+
+.show-card {
+    padding: 0; 
+}
+
+.card-body p {
+    margin-bottom: 0.5rem;
+}
+
+/* Author name in show.ejs file */
+
+.author-name{
+    color : orange !important;
+    font-style: italic !important;
+}
+
+.author {
+   color : black !important;
+}

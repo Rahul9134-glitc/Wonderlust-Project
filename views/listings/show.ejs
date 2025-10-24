@@ -1,0 +1,193 @@
+<% layout("/layouts/boilerplate") %>
+<script src="/js/formValidation.js"></script>
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-12">
+      <h3 class="mb-3"><%= listing.title %></h3>
+    </div>
+
+    <!-- Listing Card -->
+    <div class="col-12 mb-4">
+      <div class="card show-card shadow-sm">
+        <img
+          src="<%= listing.image.url %>"
+          class="card-img-top show-img"
+          alt="listing_image"
+        />
+        <div class="card-body">
+          <i>Created by: <%= listing.owner.username %></i>
+          <p class="card-text mt-2"><%= listing.description %></p>
+          <p class="card-text">&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
+          <p class="card-text"><%= listing.location %></p>
+          <p class="card-text"><%= listing.country %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Map Section -->
+    <div class="col-12 mb-4">
+      <div id="map"></div>
+    </div>
+
+    <!-- Edit/Delete Buttons -->
+    <% if (currentUser && listing.owner.equals(currentUser._id)) { %>
+      <div class="col-12 mb-4 d-flex flex-wrap gap-2">
+        <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning flex-grow-1 flex-md-grow-0">Edit</a>
+        <form method="post" action="/listings/<%= listing._id %>?_method=DELETE" class="flex-grow-1 flex-md-grow-0">
+          <button class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
+        </form>
+      </div>
+    <% } %>
+
+    <!-- Review Form -->
+    <% if(currentUser) { %>
+      <div class="col-12 mb-4">
+        <hr>
+        <h4 class="mb-3">Leave a Review</h4>
+        <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation" novalidate>
+          <div class="mb-3">
+            <label for="rating" class="form-label">Rating:</label>
+            <div class="star-rating">
+              <input type="radio" id="star5" name="review[rating]" value="5" />
+              <label for="star5" title="5 Stars"></label>
+              <input type="radio" id="star4" name="review[rating]" value="4" />
+              <label for="star4" title="4 Stars"></label>
+              <input type="radio" id="star3" name="review[rating]" value="3" />
+              <label for="star3" title="3 Stars"></label>
+              <input type="radio" id="star2" name="review[rating]" value="2" />
+              <label for="star2" title="2 Stars"></label>
+              <input type="radio" id="star1" name="review[rating]" value="1" checked required />
+              <label for="star1" title="1 Star"></label>
+            </div>
+            <div class="invalid-feedback">कृपया रेटिंग चुनें।</div>
+          </div>
+
+          <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea name="review[comment]" id="comment" class="form-control" rows="3" required></textarea>
+            <div class="invalid-feedback">कृपया समीक्षा के लिए एक टिप्पणी लिखें।</div>
+          </div>
+
+          <button class="btn btn-success mt-2">Submit Review</button>
+        </form>
+      </div>
+    <% } %>
+
+    <!-- Reviews List -->
+    <div class="col-12">
+      <hr>
+      <h4 class="mb-3">All Reviews (<%= listing.reviews.length %>)</h4>
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <% if (listing.reviews.length > 0) { %>
+          <% for(let review of listing.reviews) { %>
+            <div class="col">
+              <div class="card shadow-sm h-100">
+                <div class="card-body">
+                  <p class="mb-2 text-warning fw-bold fs-5">
+                    <%= '★'.repeat(review.rating) %><%= '☆'.repeat(5 - review.rating) %>
+                  </p>
+                  <p class="card-text fst-italic">"<%= review.comment %>"</p>
+                  <div class="d-flex justify-content-between align-items-center mt-3 pt-2 border-top">
+                    <h6 class="card-subtitle text-muted small m-0">
+                      Reviewed on: <%= review.createdAt.toLocaleDateString() %> | Author:
+                      <span class="fw-bold text-dark">
+                        <% if (review.author) { %>
+                          <%= review.author.username %>
+                        <% } else { %>
+                          [User Deleted]
+                        <% } %>
+                      </span>
+                    </h6>
+                    <% if (currentUser && review.author && review.author.equals(currentUser._id)) { %>
+                      <form method="POST" action="/listings/<%= listing._id %>/reviews/<%= review._id %>?_method=DELETE">
+                        <button class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this review?');">
+                          Delete
+                        </button>
+                      </form>
+                    <% } %>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <% } %>
+        <% } else { %>
+          <div class="col-12 text-muted">No reviews yet. Be the first to leave one!</div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Leaflet Map -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+  const latitude = <%= listing.geometry.coordinates[1] %>;
+  const longitude = <%= listing.geometry.coordinates[0] %>;
+
+  const map = L.map('map').setView([latitude, longitude], 13);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  L.marker([latitude, longitude]).addTo(map)
+    .bindPopup("<b><%= listing.title %></b><br><%= listing.location %>")
+    .openPopup();
+</script>
+
+<style>
+  /* ⭐ Image Responsive Styling */
+  .show-img {
+    width: 100%;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  /* ⭐ Map Styling */
+  #map {
+    border-radius: 10px;
+    width: 100%;
+    height: 400px;
+  }
+
+  /* ⭐ Star Rating */
+  .star-rating {
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    text-align: left;
+    display: inline-block;
+  }
+  .star-rating > input { display: none; }
+  .star-rating > label {
+    font-size: 1.5rem;
+    color: #ccc;
+    cursor: pointer;
+    padding: 0 2px;
+    transition: color 0.2s;
+  }
+  .star-rating > label:before { content: '\2605'; }
+  .star-rating > label:hover,
+  .star-rating > label:hover ~ label,
+  .star-rating > input:checked ~ label { color: #ffc107; }
+
+  /* 💻 Desktop Adjustment */
+  @media (min-width: 992px) {
+    .show-img {
+      height: 50vh;
+      max-height: 480px;
+    }
+    #map {
+      height: 350px;
+    }
+  }
+
+  /* 📱 Mobile (same design) */
+  @media (max-width: 768px) {
+    .show-img {
+      height: 40vh;
+    }
+    #map {
+      height: 300px;
+    }
+  }
+</style>

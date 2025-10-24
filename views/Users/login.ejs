@@ -1,0 +1,55 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row">
+  <div class="col-xl-4 col-lg-5 col-md-8 col-sm-10 mx-auto mt-5">
+    
+    <h1 class="text-center mb-4 display-6 fw-bold text-primary">Login</h1>
+    
+    <div class="card shadow-lg p-4 mb-5 bg-white rounded-3">
+      <div class="card-body">
+        
+        <form action="/login" method="post" novalidate class="needs-validation">
+          
+          <!-- Username Field -->
+          <div class="mb-3">
+            <label for="username" class="form-label fw-bold">Username</label>
+            <input
+              name="username"
+              id="username"
+              type="text"
+              class="form-control"
+              placeholder="Enter your username"
+              required
+              autofocus
+            />
+            <div class="invalid-feedback">Username cannot be empty.</div>
+          </div>
+          
+          <!-- Password Field -->
+          <div class="mb-4">
+            <label for="password" class="form-label fw-bold">Password</label>
+            <input
+              name="password"
+              id="password"
+              type="password"
+              class="form-control"
+              placeholder="Enter your password"
+              required
+            />
+            <div class="invalid-feedback">Password cannot be empty.</div>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="d-grid">
+            <button class="btn btn-success btn-lg mt-2 fw-bold rounded-pill">
+              Login
+            </button>
+          </div>
+          
+        </form>
+        
+      </div>
+    </div>
+    
+  </div>
+</div>

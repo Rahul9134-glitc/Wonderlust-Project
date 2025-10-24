@@ -1,0 +1,77 @@
+<style>
+  /* 🔹 Footer Base Style */
+  footer {
+    background: #f8f9fa;
+    border-top: 2px solid #dee2e6;
+    padding: 2rem 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+  }
+
+  /* 🔹 Footer Text */
+  .footer-text {
+    color: #6c757d;
+    font-size: 0.95rem;
+    margin: 0;
+  }
+
+  /* 🔹 Highlighted Developer Name */
+  .footer-name {
+    font-weight: 700;
+    background: linear-gradient(90deg, #007bff, #6610f2);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.5px;
+  }
+
+  /* 🔹 Social Icons */
+  .footer-social {
+    margin-top: 0.4rem;
+  }
+
+  .footer-social i {
+    color: #6c757d;
+    margin: 0 8px;
+    font-size: 1.2rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .footer-social i:hover {
+    color: #007bff;
+    transform: translateY(-3px);
+  }
+
+  /* 🔹 Responsive: Extra space for small screens */
+  @media (max-width: 576px) {
+    footer {
+      padding: 1.5rem 0;
+    }
+    .footer-text {
+      font-size: 0.9rem;
+    }
+    .footer-social i {
+      font-size: 1.1rem;
+    }
+  }
+</style>
+
+<footer class="mt-5">
+  <p class="footer-text mb-1">
+    © <%= new Date().getFullYear() %> Wanderlust. All rights reserved.
+  </p>
+  <p class="footer-text">
+    Made with ❤️ by <span class="footer-name">Rahul Vishwakarma</span>
+  </p>
+
+  <div class="footer-social">
+    <a href="#" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+    <a href="#" aria-label="LinkedIn"><i class="fa-brands fa-linkedin"></i></a>
+  </div>
+</footer>

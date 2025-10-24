@@ -1,0 +1,234 @@
+<% layout("/layouts/boilerplate") %>
+
+<!-- 🌟 Category Icons Section -->
+<div class="container my-3">
+  <div class="icon-scroll d-flex flex-nowrap overflow-auto py-2 align-items-center">
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-fire"></i>
+      <p>Trending</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-bed"></i>
+      <p>Rooms</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-city"></i>
+      <p>City</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-mountain"></i>
+      <p>Mountains</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-chess-rook"></i>
+      <p>Castles</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-water-ladder"></i>
+      <p>Pools</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-campground"></i>
+      <p>Camping</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-solid fa-tractor"></i>
+      <p>Farms</p>
+    </div>
+    <div class="icon-card text-center mx-3">
+      <i class="fa-regular fa-snowflake"></i>
+      <p>Arctic</p>
+    </div>
+
+    <!-- 🔹 GST Toggle -->
+    <div class="icon-card text-center mx-3 gst-toggle-card p-2">
+      <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
+        <label class="form-check-label fw-semibold text-secondary mb-0" for="gstToggle">
+          Display total with tax
+        </label>
+        <div class="form-check form-switch m-0">
+          <input
+            class="form-check-input border border-secondary"
+            type="checkbox"
+            id="gstToggle"
+            style="width: 3rem; height: 1.5rem;"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 🏡 Listings Section -->
+<div class="container mt-3">
+  <div class="row g-4 row-cols-1 row-cols-md-2 row-cols-lg-3">
+    <% for (let listing of listings) { %>
+    <div class="col d-flex">
+      <a href="/listings/<%= listing._id %>" class="text-decoration-none text-dark w-100">
+        <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+
+          <!-- Image -->
+          <img
+            src="<%= listing.image.url %>"
+            class="card-img-top"
+            alt="<%= listing.title %>"
+            style="height: 16rem; object-fit: cover;"
+          />
+
+          <!-- Card Body -->
+          <div class="card-body">
+            <h5 class="card-title fw-semibold text-truncate"><%= listing.title %></h5>
+            <p class="card-text mb-2 text-muted">
+              ₹ <%= listing.price.toLocaleString("en-IN") %> / night  
+              <span class="gst-text text-danger fw-semibold">+18% GST</span>
+            </p>
+            <p class="mb-0 text-warning">★★★★☆</p>
+          </div>
+
+          <!-- Footer Icons -->
+          <div class="card-footer bg-white border-0 d-flex justify-content-between px-4 pb-3">
+            <i class="fa-solid fa-location-dot text-danger"></i>
+            <i class="fa-regular fa-heart text-danger"></i>
+            <i class="fa-regular fa-comment-dots text-primary"></i>
+          </div>
+        </div>
+      </a>
+    </div>
+    <% } %>
+  </div>
+</div>
+
+<!-- 💡 JS for GST Toggle -->
+<script>
+  const toggle = document.getElementById('gstToggle');
+  const gstTexts = document.querySelectorAll('.gst-text');
+
+  // Hide initially
+  gstTexts.forEach(el => {
+    el.style.opacity = 0;
+    el.style.transition = "opacity 0.4s ease";
+  });
+
+  toggle.addEventListener('change', () => {
+    gstTexts.forEach(el => {
+      el.style.opacity = toggle.checked ? 1 : 0;
+    });
+  });
+</script>
+
+<!-- 💅 CSS Styling -->
+<style>
+  .gst-text {
+    display: inline-block;
+  }
+
+  /* Horizontal scroll */
+  .icon-scroll {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    scroll-snap-type: x mandatory;
+  }
+  .icon-scroll::-webkit-scrollbar {
+    display: none;
+  }
+  .icon-card {
+    scroll-snap-align: start;
+    width: 70px;
+    color: #555;
+    flex-shrink: 0;
+    transition: all 0.3s ease;
+  }
+  .icon-card i {
+    font-size: 1.3rem;
+    margin-bottom: 5px;
+    color: #777;
+    transition: color 0.3s ease, transform 0.2s ease;
+  }
+  .icon-card:hover i {
+    color: #ff385c;
+    transform: scale(1.15);
+  }
+  .icon-card p {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin: 0;
+  }
+
+  /* 🔹 GST toggle card */
+  .gst-toggle-card {
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 0.6rem 1rem;
+    background-color: #fdfdfd;
+    min-width: 180px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  }
+
+  .gst-toggle-card label {
+    font-size: 0.85rem;
+  }
+
+  .form-check-input {
+    cursor: pointer;
+    background-color: #e9ecef;
+  }
+
+  .form-check-input:checked {
+    background-color: #ff385c;
+    border-color: #ff385c;
+  }
+
+  /* Cards */
+  .card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Footer icons */
+  .card-footer i {
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: color 0.3s, transform 0.2s;
+  }
+  .card-footer i:hover {
+    transform: scale(1.1);
+  }
+
+  /* Responsive tweaks */
+  @media (max-width: 768px) {
+    .icon-card {
+      width: 60px;
+    }
+    .icon-card i {
+      font-size: 1.2rem;
+    }
+    .icon-card p {
+      font-size: 0.7rem;
+    }
+    .gst-toggle-card {
+      min-width: 160px;
+      font-size: 0.8rem;
+      padding: 0.5rem 0.8rem;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .icon-card {
+      width: 55px;
+    }
+    .icon-card i {
+      font-size: 1.1rem;
+    }
+    .icon-card p {
+      font-size: 0.7rem;
+    }
+    .gst-toggle-card {
+      min-width: 150px;
+      font-size: 0.75rem;
+      padding: 0.4rem 0.6rem;
+    }
+  }
+</style>

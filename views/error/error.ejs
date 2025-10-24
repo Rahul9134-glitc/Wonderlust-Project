@@ -1,0 +1,97 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+    /* Full viewport height and central alignment (Copied from 404 Style) */
+    .error-container {
+        min-height: 80vh; 
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #495057; 
+        background-color: #f8f9fa; 
+    }
+
+    /* Styling the main Status Code or Heading */
+    .error-code {
+        font-size: 8rem;
+        font-weight: 900;
+        color: #0d6efd; /* Bootstrap Primary Blue for general error status */
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 0.5rem;
+    }
+
+    /* Styling the secondary message */
+    .error-heading {
+        font-size: 2rem;
+        color: #dc3545; /* Danger Red for the 'Something Went Wrong' text */
+        margin-bottom: 20px;
+    }
+
+    /* Styling the detailed message box */
+    .error-details {
+        max-width: 500px;
+        background-color: #ffe5e5; /* Light red background for message box */
+        border: 1px solid #dc3545;
+        border-radius: 8px;
+        padding: 20px;
+        margin-bottom: 30px;
+        font-family: monospace;
+        text-align: left;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+        .error-code {
+            font-size: 5rem;
+        }
+        .error-heading {
+            font-size: 1.5rem;
+        }
+    }
+</style>
+
+<div class="error-container">
+    
+    <!-- Displaying Dynamic Status Code (e.g., 400, 500) -->
+    <% 
+        // Agar error global handler se aaya hai (err object), toh uska statusCode use karo.
+        let displayStatus = (typeof err !== 'undefined' && err.statusCode) ? err.statusCode : 'Error';
+    %>
+    <h1 class="error-code">
+        <%= displayStatus %>
+    </h1>
+    
+    <!-- Main Heading -->
+    <h3 class="error-heading">
+        Oops! Something Went Wrong!
+    </h3>
+
+    <div class="error-details shadow">
+        <p class="fw-bold mb-2 text-danger">Details:</p>
+        <% 
+            let errorMsg = "An unexpected server error occurred.";
+            
+            // Case 1: Error from Global Handler (ApiError or regular Error object)
+            if (typeof err !== 'undefined' && err.message) {
+                errorMsg = err.message;
+            } 
+            
+            // Case 2: Error from Joi Validation (if passed as { error })
+            else if (typeof error !== 'undefined' && error.details) {
+                // Joi validation errors ko clean karke dikhao
+                errorMsg = error.details.map(el => el.message).join(' | ');
+            } 
+        %>
+        
+        <p class="lead">
+            <%= errorMsg %>
+        </p>
+    </div>
+
+    <!-- Home Button -->
+    <a href="/listings" class="btn btn-dark btn-lg shadow">
+        Go to Listings
+    </a>
+</div>

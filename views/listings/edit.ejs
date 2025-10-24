@@ -1,0 +1,186 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+  <div class="row">
+    <div class="col-8 offset-2">
+      <h3>Edit Listing</h3>
+      <br>
+
+      <form method="post" action="/listings/<%= listing._id %>?_method=PUT" novalidate class="needs-validation" enctype="multipart/form-data">
+        <!-- Title -->
+        <div class="mb-3">
+          <label for="title" class="form-label">Title</label>
+          <input
+            placeholder="Enter catchy title"
+            name="listing[title]"
+            type="text"
+            class="form-control"
+            value="<%= listing.title %>"
+            required
+          />
+          <div class="valid-feedback">Title looks good!</div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            placeholder="Enter your description"
+            name="listing[description]"
+            class="form-control"
+            rows="2"
+            required
+          ><%= listing.description %></textarea>
+          <div class="invalid-feedback">Please enter a short description!</div>
+        </div>
+
+        <!-- Image -->
+        <div class="mb-3">
+          <label for="image" class="form-label">Upload Image</label>
+          <input
+            name="listing[image]"
+            type="file"
+            class="form-control"
+          />
+          <small>Current Image:</small>
+          <img src="<%= listing.image.url %>" alt="listing image" style="height:100px;">
+        </div>
+
+        <!-- Price & Country -->
+        <div class="row">
+          <div class="mb-3 col-md-4">
+            <label for="price" class="form-label">Price</label>
+            <input
+              placeholder="1200"
+              name="listing[price]"
+              class="form-control"
+              value="<%= listing.price %>"
+              required
+            />
+            <div class="invalid-feedback">Price should be valid!</div>
+          </div>
+
+          <div class="mb-3 col-md-8">
+            <label for="country" class="form-label">Country</label>
+            <input
+              placeholder="India"
+              name="listing[country]"
+              id="country"
+              type="text"
+              class="form-control"
+              value="<%= listing.country %>"
+              required
+            />
+            <div class="invalid-feedback">Country should be valid!</div>
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="mb-3">
+          <label for="location" class="form-label">Location</label>
+          <input
+            placeholder="Rajasthan, Jaipur"
+            name="listing[location]"
+            id="location"
+            type="text"
+            class="form-control"
+            value="<%= listing.location %>"
+            required
+          />
+          <div class="invalid-feedback">Location should be valid!</div>
+        </div>
+
+        <!-- Hidden geometry field -->
+        <input type="hidden" name="listing[geometry]" id="geometry" value='<%= JSON.stringify(listing.geometry) %>'>
+
+        <!-- Map Preview -->
+        <div id="map" style="height: 300px; border-radius: 10px; margin-bottom: 15px;"></div>
+
+        <!-- Submit -->
+        <button class="btn btn-dark add-btn">Update Listing</button>
+      </form>
+      <br>
+    </div>
+  </div>
+
+  <!-- Leaflet CSS & JS -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <script>
+    // Parse existing geometry
+    const existingGeometry = <%- JSON.stringify(listing.geometry) %>;
+    const map = L.map('map').setView(
+      existingGeometry && existingGeometry.coordinates[1] ? [existingGeometry.coordinates[1], existingGeometry.coordinates[0]] : [20.5937, 78.9629],
+      existingGeometry && existingGeometry.coordinates[1] ? 13 : 5
+    );
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+    if (existingGeometry && existingGeometry.coordinates[1]) {
+      marker = L.marker([existingGeometry.coordinates[1], existingGeometry.coordinates[0]]).addTo(map)
+        .bindPopup('<%= listing.location %>, <%= listing.country %>')
+        .openPopup();
+    }
+
+    async function updateMap() {
+      const location = document.getElementById('location').value;
+      const country = document.getElementById('country').value;
+      if (!location) return;
+
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(location + ', ' + country)}`);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        const lat = parseFloat(data[0].lat);
+        const lon = parseFloat(data[0].lon);
+
+        // Set hidden geometry input
+        document.getElementById('geometry').value = JSON.stringify({
+          type: "Point",
+          coordinates: [lon, lat]
+        });
+
+        // Update map
+        map.setView([lat, lon], 13);
+
+        if (marker) map.removeLayer(marker);
+        marker = L.marker([lat, lon]).addTo(map)
+          .bindPopup(location + ', ' + country)
+          .openPopup();
+      }
+    }
+
+    // Update map on blur
+    document.getElementById('location').addEventListener('blur', updateMap);
+    document.getElementById('country').addEventListener('blur', updateMap);
+
+    // Ensure geometry is set before submit
+    const form = document.querySelector('.needs-validation');
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault(); // temporarily stop submit
+      await updateMap(); // wait for geometry to set
+      form.submit(); // now submit
+    });
+
+    // Bootstrap form validation
+    (function () {
+      'use strict'
+      var forms = document.querySelectorAll('.needs-validation')
+      Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+  </script>
+</body>
