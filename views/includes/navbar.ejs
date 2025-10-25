@@ -162,9 +162,9 @@
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2">
             <li><h6 class="dropdown-header">Account Settings</h6></li>
-            <li><a class="dropdown-item" href="#">My Profile</a></li>
+            <li><a class="dropdown-item" href="/users/<%= currentUser._id %>">My Profile</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item text-danger fw-bold" href="/logout">Log Out</a></li>
+            <li><a class="dropdown-item text-danger fw-bold" href="/users/logout">Log Out</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a href="/listings/new" class="dropdown-item text-primary fw-semibold">
@@ -186,8 +186,8 @@
             <i class="fa-solid fa-user-lock profile-icon-animated"></i>
           </a>
           <ul class="dropdown-menu dropdown-menu-end mt-2">
-            <li><a class="dropdown-item" href="/signup">Sign Up</a></li>
-            <li><a class="dropdown-item" href="/login">Log In</a></li>
+            <li><a class="dropdown-item" href="/users/signup">Sign Up</a></li>
+            <li><a class="dropdown-item" href="/users/login">Log In</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
               <a href="/listings/new" class="dropdown-item text-primary fw-semibold">

@@ -1,0 +1,105 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card mb-4 shadow">
+                <div class="text-center p-3">
+                    <img 
+                        src="<%= user.profile.url %>" 
+                        alt="<%= user.username %>'s Profile Picture" 
+                        class="profile-img-round border border-4 border-info shadow-sm" 
+                    >
+                </div>
+                
+                <div class="card-body text-center pt-0">
+                    <h5 class="card-title display-6 mb-1 text-primary">@<%= user.username %></h5>
+                    
+                    <% if (user.profile.firstName) { %>
+                        <p class="text-dark fw-bold mb-3 profile-full-name">
+                            <%= user.profile.firstName %> 
+                            <% if (user.profile.lastName) { %>
+                                <%= user.profile.lastName %>
+                            <% } %>
+                        </p>
+                    <% } %>
+
+                    <% if (currentUser && currentUser._id.equals(user._id)) { %>
+                        <a href="/users/<%= user._id %>/edit" class="btn btn-info btn-sm mt-2 text-white">
+                            <i class="fas fa-edit"></i> Edit Your Profile
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+            
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-3 text-muted border-bottom pb-2"><i class="fas fa-user-circle me-2"></i> About</h6>
+                    
+                    <% if (user.profile.location) { %>
+                        <p class="card-text mb-2"><i class="fas fa-map-marker-alt text-danger me-2"></i> <strong>From:</strong> <%= user.profile.location %></p>
+                        <hr>
+                    <% } %>
+                    
+                    <h6 class="card-subtitle mb-2 text-muted">Bio</h6>
+                    <p class="card-text fst-italic text-secondary"><%= user.profile.bio || 'This user has not set a bio yet.' %></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h3 class="mb-4 text-secondary">Trips Posted by <%= user.username %> (<%= user.listings.length %>)</h3>
+            
+            <% if (user.listings && user.listings.length > 0) { %>
+                <div class="row row-cols-1 row-cols-md-2 g-4">
+                    <% user.listings.forEach(listing => { %>
+                        <div class="col">
+                            <a href="/listings/<%= listing._id %>" class="text-decoration-none">
+                                <div class="card h-100 listing-card-hover shadow-sm">
+                                    <img 
+                                        src="<%= listing.image.url %>" 
+                                        class="card-img-top" 
+                                        alt="<%= listing.title %>" 
+                                        style="height: 200px; object-fit: cover; border-radius: 8px 8px 0 0;"
+                                    >
+                                    <div class="card-body">
+                                        <h5 class="card-title text-dark"><%= listing.title %></h5>
+                                        <p class="card-text text-muted small"><%= listing.location %>, <%= listing.country %></p>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <p class="text-muted border p-3 rounded bg-light">This user hasn't posted any trips yet. Maybe encourage them to share their adventures!</p>
+            <% } %>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* Profile Picture Round Shape */
+    .profile-img-round {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%; /* Makes the image circular */
+        object-fit: cover;
+    }
+
+    /* Full Name Styling */
+    .profile-full-name {
+        font-size: 1.15rem;
+        color: #007bff; /* Blue color for highlight */
+        margin-bottom: 10px !important;
+    }
+
+    /* Card Hover Effect for Listings */
+    .listing-card-hover {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+    .listing-card-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+</style>

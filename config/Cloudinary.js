@@ -23,4 +23,16 @@ const storage = new CloudinaryStorage({
 });
 
 
-export {cloudinary , storage}
+const profileStorage = new CloudinaryStorage({
+    cloudinary: cloudinary.v2,
+    params: {
+        folder: 'WanderLust_PROFILES',
+        allowedFormats: ['jpeg', 'png', 'jpg'],
+        transformation: [
+            { width: 300, height: 300, crop: "fill", gravity: "face" } 
+        ]
+    },
+});
+
+
+export {cloudinary , storage , profileStorage}

@@ -14,7 +14,7 @@ const isLoggedIn = (req, res, next) => {
     req.flash("error", "You must be logged in to create a new listing!");
 
     // 3. Login page पर redirect करें
-    return res.redirect("/login");
+    return res.redirect("/users/login");
   }
   // 4. अगर logged in है, तो next() function चलाएँ
   next();
@@ -34,7 +34,7 @@ const isowner = async(req, res, next)=> {
     // 1. Check if the user is authenticated (isLoggedIn middleware should be before this)
     if (!req.user) {
         req.flash("error", "You must be logged in to modify listings.");
-        return res.redirect("/login"); 
+        return res.redirect("/users/login"); 
     }
 
     let { id } = req.params; // Listing ID from the URL
@@ -83,4 +83,15 @@ const isReviewAuthor = async(req ,res , next)=>{
 };
 
 
-export { isLoggedIn, saveRedirectUrl , isowner , isReviewAuthor };
+export const isProfileOwner = async (req, res, next) => {
+    let { id } = req.params;
+    if (res.locals.currentUser && res.locals.currentUser._id.equals(id)) {
+        next();
+    } else {
+        req.flash("error", "You do not have permission to do that!");
+        return res.redirect(`/users/${id}`);
+    }
+};
+
+
+export { isLoggedIn, saveRedirectUrl , isowner , isReviewAuthor  };

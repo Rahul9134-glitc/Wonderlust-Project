@@ -1,49 +1,66 @@
 <% layout("/layouts/boilerplate") %>
 <script src="/js/formValidation.js"></script>
 
-<div class="container mt-3">
+<div class="container mt-4">
   <div class="row">
-    <div class="col-12">
-      <h3 class="mb-3"><%= listing.title %></h3>
+    <!-- 🏡 Listing Title -->
+    <div class="col-12 mb-3">
+      <h3 class="text-secondary fw-semibold"><%= listing.title %></h3>
     </div>
 
-    <!-- Listing Card -->
-    <div class="col-12 mb-4">
-      <div class="card show-card shadow-sm">
-        <img src="<%= listing.image.url %>" class="card-img-top show-img" alt="listing_image" />
+    <!-- 🖼️ Image Section -->
+    <div class="col-lg-7 col-md-12 mb-4">
+      <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+        <img 
+          src="<%= listing.image.url %>" 
+          class="card-img-top listing-img" 
+          alt="listing_image" 
+        />
         <div class="card-body">
-          <i>Created by: <%= listing.owner.username %></i>
-          <p class="card-text mt-2"><%= listing.description %></p>
-          <p class="card-text">&#8377; <%= listing.price.toLocaleString("en-IN") %></p>
-          <p class="card-text"><%= listing.location %></p>
-          <p class="card-text"><%= listing.country %></p>
+          <i class="text-muted small d-block mb-2">
+            <a href="/users/<%= listing.owner._id %>">Created by: <%= listing.owner.username %></a>
+          </i>
+          <p class="mb-2"><%= listing.description %></p>
+          <p class="fw-bold text-dark mb-1">
+            ₹ <%= listing.price.toLocaleString("en-IN") %>
+          </p>
+          <p class="text-muted mb-0">
+            <i class="fas fa-map-marker-alt me-1 text-danger"></i>
+            <%= listing.location %>, <%= listing.country %>
+          </p>
         </div>
       </div>
     </div>
 
-    <!-- Map -->
-    <div class="col-12 mb-4">
-      <div id="map"></div>
+    <!-- 🗺️ Map Section -->
+    <div class="col-lg-5 col-md-12 mb-4">
+      <div class="card shadow-sm border-0 rounded-3">
+        <div class="card-body p-0">
+          <div id="map"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- Edit/Delete Buttons -->
+    <!-- ✏️ Edit/Delete Buttons -->
     <% if (currentUser && listing.owner.equals(currentUser._id)) { %>
       <div class="col-12 mb-4 d-flex flex-wrap gap-2">
         <a href="/listings/<%= listing._id %>/edit" class="btn btn-warning flex-grow-1 flex-md-grow-0">Edit</a>
         <form method="post" action="/listings/<%= listing._id %>?_method=DELETE" class="flex-grow-1 flex-md-grow-0">
-          <button class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this listing?');">Delete</button>
+          <button class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to delete this listing?');">
+            Delete
+          </button>
         </form>
       </div>
     <% } %>
 
-    <!-- Review Form -->
+    <!-- 🌟 Review Form -->
     <% if(currentUser) { %>
       <div class="col-12 mb-4">
         <hr>
         <h4 class="mb-3">Leave a Review</h4>
         <form action="/listings/<%= listing._id %>/reviews" method="POST" class="needs-validation" novalidate>
           <div class="mb-3">
-            <label for="rating" class="form-label">Rating:</label>
+            <label class="form-label">Rating:</label>
             <div class="star-rating">
               <input type="radio" id="star5" name="review[rating]" value="5" />
               <label for="star5" title="5 Stars"></label>
@@ -56,13 +73,11 @@
               <input type="radio" id="star1" name="review[rating]" value="1" checked required />
               <label for="star1" title="1 Star"></label>
             </div>
-            <div class="invalid-feedback">कृपया रेटिंग चुनें।</div>
           </div>
 
           <div class="mb-3">
             <label for="comment" class="form-label">Comment</label>
             <textarea name="review[comment]" id="comment" class="form-control" rows="3" required></textarea>
-            <div class="invalid-feedback">कृपया समीक्षा के लिए एक टिप्पणी लिखें।</div>
           </div>
 
           <button class="btn btn-success mt-2">Submit Review</button>
@@ -70,7 +85,7 @@
       </div>
     <% } %>
 
-    <!-- Reviews -->
+    <!-- 🗒️ Reviews List -->
     <div class="col-12">
       <hr>
       <h4 class="mb-3">All Reviews (<%= listing.reviews.length %>)</h4>
@@ -78,7 +93,7 @@
         <% if (listing.reviews.length > 0) { %>
           <% for(let review of listing.reviews) { %>
             <div class="col">
-              <div class="card shadow-sm h-100">
+              <div class="card shadow-sm h-100 border-0">
                 <div class="card-body d-flex flex-column justify-content-between">
                   <div>
                     <p class="mb-2 text-warning fw-bold fs-5">
@@ -86,13 +101,12 @@
                     </p>
                     <p class="card-text fst-italic mb-3">"<%= review.comment %>"</p>
                   </div>
-
                   <div class="review-footer mt-auto pt-3 border-top d-flex justify-content-between align-items-center">
                     <h6 class="card-subtitle text-muted small m-0">
                       Reviewed on: <%= review.createdAt.toLocaleDateString() %> | Author:
                       <span class="fw-bold text-dark">
                         <% if (review.author) { %>
-                          <%= review.author.username %>
+                          <a href="/users/<%= review.author._id %>"><%= review.author.username %></a>
                         <% } else { %>
                           [User Deleted]
                         <% } %>
@@ -113,14 +127,16 @@
             </div>
           <% } %>
         <% } else { %>
-          <div class="col-12 text-muted">No reviews yet. Be the first to leave one!</div>
+          <div class="col-12 text-muted p-3 border rounded bg-light">
+            No reviews yet. Be the first to leave one!
+          </div>
         <% } %>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Leaflet Map -->
+<!-- 🗺️ Leaflet JS + CSS -->
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
@@ -142,23 +158,18 @@
 </script>
 
 <style>
-  .show-img {
+  /* 🖼️ Listing Image Styling */
+  .listing-img {
     width: 100%;
-    border-radius: 8px;
+    height: 300px; 
     object-fit: cover;
   }
 
+  /* 🗺️ Map Styling */
   #map {
     width: 100%;
-    height: 400px;
-    min-height: 350px;
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .leaflet-container {
-    width: 100% !important;
-    height: 100% !important;
+    height: 300px;
+    border-radius: 8px;
   }
 
   /* ⭐ Star Rating */
@@ -168,6 +179,7 @@
     text-align: left;
     display: inline-block;
   }
+
   .star-rating > input { display: none; }
   .star-rating > label {
     font-size: 1.5rem;
@@ -181,26 +193,8 @@
   .star-rating > label:hover ~ label,
   .star-rating > input:checked ~ label { color: #ffc107; }
 
-  /* ✅ Review Footer Styling */
-  .review-footer {
-    gap: 10px;
-  }
-
-  .review-footer form {
-    margin-left: 10px;
-  }
-
-  .review-footer button {
-    font-size: 0.85rem;
-  }
-
-  @media (min-width: 992px) {
-    .show-img { height: 50vh; max-height: 480px; }
-    #map { height: 400px; }
-  }
-
+  /* 📱 Responsive */
   @media (max-width: 768px) {
-    .show-img { height: 40vh; }
-    #map { height: 300px; }
+    .listing-img, #map { height: 250px; }
   }
 </style>

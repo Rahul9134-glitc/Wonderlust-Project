@@ -1,0 +1,89 @@
+<% layout("/layouts/boilerplate") %>
+
+<div class="row mt-3">
+    <div class="col-8 offset-2">
+        <h3 class="mb-3">Edit Your Profile (<%= user.username %>)</h3>
+        
+        <form 
+            method="POST" 
+            action="/users/<%= user._id %>?_method=PUT" 
+            class="needs-validation" 
+            novalidate 
+            enctype="multipart/form-data" 
+        >
+            <input type="hidden" name="_method" value="PUT">
+
+            <div class="mb-4 text-center">
+                <label class="form-label d-block">Current Profile Picture</label>
+                <img 
+                    src="<%= user.profile.url %>" 
+                    alt="Current Profile Pic" 
+                    class="rounded-circle mb-3 border border-3 border-secondary" 
+                    style="width: 150px; height: 150px; object-fit: cover;"
+                >
+                
+                <div class="mb-3">
+                    <label for="profilePicture" class="form-label">Upload New Picture</label>
+                    <input 
+                        type="file" 
+                        class="form-control" 
+                        id="profilePicture" 
+                        name="profilePicture" 
+                        aria-label="New Profile Picture"
+                    >
+                    <div class="form-text">Uploading a new file will replace the current picture. (Optional)</div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="mb-3 col-md-6">
+                    <label for="firstName" class="form-label">First Name</label>
+                    <input 
+                        name="profile[firstName]" 
+                        value="<%= user.profile.firstName || '' %>" 
+                        type="text" 
+                        class="form-control" 
+                        id="firstName"
+                    >
+                </div>
+                
+                <div class="mb-3 col-md-6">
+                    <label for="lastName" class="form-label">Last Name</label>
+                    <input 
+                        name="profile[lastName]" 
+                        value="<%= user.profile.lastName || '' %>" 
+                        type="text" 
+                        class="form-control" 
+                        id="lastName"
+                    >
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="location" class="form-label">Location</label>
+                <input 
+                    name="profile[location]" 
+                    value="<%= user.profile.location || '' %>" 
+                    type="text" 
+                    class="form-control" 
+                    id="location"
+                >
+            </div>
+
+            <div class="mb-3">
+                <label for="bio" class="form-label">Bio</label>
+                <textarea 
+                    name="profile[bio]" 
+                    class="form-control" 
+                    id="bio" 
+                    rows="4"
+                ><%= user.profile.bio || '' %></textarea>
+            </div>
+
+            <div class="mb-3">
+                <button class="btn btn-success">Update Profile</button>
+                <a href="/users/<%= user._id %>" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>

@@ -75,7 +75,7 @@ app.use((req, res, next) => {
 
 app.use("/listings", ListingRoutes);
 app.use("/listings/:id/reviews", ReviewsRouter);
-app.use("/", UserRouter)
+app.use("/users", UserRouter)
 
 
 

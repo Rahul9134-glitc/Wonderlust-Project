@@ -1,6 +1,7 @@
 import Listing from "../Models/listing.js";
 import asyncHandler from "../config/asyncHandler.js";
 import ApiError from "../config/ApiError.js";
+import User from "../Models/user.js";
 
 const getAllListings = asyncHandler(async (req, res, next) => {
   const listings = await Listing.find({});
@@ -68,6 +69,10 @@ const addnewListing = asyncHandler(async (req, res, next) => {
 
   await listing.save();
 
+  await User.findByIdAndUpdate(req.user._id , {
+    $push : {listings : listing._id}
+  });
+
   req.flash("success", "Listing added successfully.");
   res.redirect("/listings");
 });
@@ -91,7 +96,6 @@ const updateListing = asyncHandler(async (req, res, next) => {
     const { id } = req.params;
     let listingData = req.body.listing;
 
-    // ⚡ Handle geometry safely
     if (listingData.geometry) {
         try {
             listingData.geometry = JSON.parse(listingData.geometry);
